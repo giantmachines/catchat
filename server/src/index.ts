@@ -1,8 +1,13 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { decode, JwtPayload } from 'jsonwebtoken';
 
 require('dotenv').config();
+
+const CLIENT_APP_ID = process.env.CLIENT_APP_ID;
+const AUDIENCE = process.env.AUDIENCE;
 
 interface User {
   id: string;
@@ -15,6 +20,16 @@ interface Message {
   body: string;
 }
 
+const accessTokenValidator = function(req: Request, res: Response, next: NextFunction) {
+  const accessToken = req.headers.authorization.split(' ')[1];
+  const claims = parseClaims(accessToken);
+  if (claims?.aud === AUDIENCE && claims?.appid === CLIENT_APP_ID) {
+    next();
+  } else {
+    res.status(401).end();
+  }
+}
+
 const messages: Message[] = [];
 let masks: string[] = [];
 
@@ -23,6 +38,16 @@ const app = express();
 
 app.use(bodyParser.text());
 app.use(cors());
+app.use(accessTokenValidator);
+
+
+const isValidToken = (token: JwtPayload | string) => true;
+
+const parseClaims = (token: string): JwtPayload | null => {
+  const decoded = decode(token);
+  if (!isValidToken(decoded)) return null;
+  return (decoded as JwtPayload);
+}
 
 const meowMask = (message: Message) => {
     if (!masks.length || !message.body.length) return message;
