@@ -1,0 +1,98 @@
+html { 
+  background: url(images/bg-green.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+}
+
+.app {
+  margin-left: 20%;
+  margin-right: 20%;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  color: navajowhite;
+  padding-top: 3em;
+}
+
+.login-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5em;
+  border: 1px solid;
+  padding: 0.5em;
+}
+
+.login-header-name {
+  margin-right: 1em;
+}
+
+.chat-message-box {
+  padding: 0.5em;
+  height: 15em;
+  border: 1px solid;
+  margin-bottom: 0.5em;
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column-reverse;
+  justify-content: end;
+}
+
+.chat-message-sender-name {
+  margin-right: 1em;
+}
+
+.chat-input input {
+  border: solid 1px navajowhite;
+  color: navajowhite;
+  width: 100%;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.chat-input input:hover {
+  color: #fff000;
+}
+
+.login-header,
+.mask-settings,
+.chat-message-box,
+.chat-input input {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 0.5em;
+}
+
+.mask-settings {
+  margin-top: 20px;
+  border: solid 1px lightblue;
+  padding: 20px 10px;
+}
+
+.mask-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mask {
+  background: lightblue;
+  border: solid 1px black;
+  border-radius: 5px;
+  margin: 5px 10px 5px 0;
+  padding: 5px;
+  color: black;
+}
+
+.mask-delete {
+  position: relative;
+  bottom: 6px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.mask-settings-form {
+  margin-top: 10px;
+}
+
+.mask-input {
+  margin-right: 10px;
+}
+
+

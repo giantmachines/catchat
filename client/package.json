@@ -1,0 +1,33 @@
+{
+  "name": "catchat-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && webpack",
+    "start": "http-server ./dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/msal-browser": "^2.22.1",
+    "@types/react": "^17.0.42",
+    "@types/react-dom": "^17.0.14",
+    "dotenv": "^16.0.0",
+    "dotenv-webpack": "^7.1.0",
+    "http-server": "^14.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.2",
+    "use-interval": "^1.4.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "devDependencies": {
+    "css-loader": "^6.7.1",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1"
+  }
+}
