@@ -36,13 +36,14 @@ export async function fetchMasks(token: string) {
   return json;
 }
 
-export async function postMasks(masks: Mask[], token: string) {
+export async function postMasks(masks: Mask[], accessToken: string, idToken: string) {
   const resp = await fetch(`${SERVER_URI}/masks`, 
     { 
       method: 'POST', 
       body: JSON.stringify(masks),
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
+        'id-token': idToken,
       }
     });
   const json = await resp.json();

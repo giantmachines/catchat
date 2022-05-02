@@ -12,14 +12,16 @@ const FETCH_INTERVAL = 2000;
 
 const App = () => {
   const [accessToken, setAccessToken] = useState<string>(null);
+  const [idToken, setIdToken] = useState(null);
   const [idClaims, setIdClaims] = useState(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [masks, setMasks] = useState<Mask[]>([]);
 
   useEffect(() => {
     async function callGetTokens() {
-      const { accessToken, idClaims } = await getTokens();
+      const { accessToken, idClaims, idToken } = await getTokens();
       if (accessToken) setAccessToken(accessToken);
+      if (idToken) setIdToken(idToken);
       if (idClaims) setIdClaims(idClaims);
     }
     if (!accessToken || !idClaims) callGetTokens();
@@ -66,13 +68,15 @@ const App = () => {
             }, accessToken);
           }}
         />
-      <MaskSettings
-        masks={masks}
-        updateMasksHandler={async (masks) => {
-          const newMasks = await postMasks(masks, accessToken);
-          setMasks(newMasks);
-        }}
-      />
+        { idClaims?.roles?.includes('Chat.Admin')  &&
+        <MaskSettings
+          masks={masks}
+          updateMasksHandler={async (masks) => {
+            const newMasks = await postMasks(masks, accessToken, idToken);
+            setMasks(newMasks);
+          }}
+        />
+      }
       </div>
   )
 };
