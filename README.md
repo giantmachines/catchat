@@ -16,6 +16,11 @@ Catchat v1 comes with these components:
 
 You will add a third component: an Azure Active Directory identity provider (aka Azure AD) to store chat users. Then you'll update the client and server code to integrate with the identity provider.
 
+## Architecture Notes
+
+TODO Feature matrix
+TODO Sequence diagram
+
 ## Start Catchat
 
 Before making changes, let's explore Catchat v1. 
@@ -45,10 +50,6 @@ Play with the application, take a look at the code, and see if you can answer th
 -  How do messages get sent between users?
 -  How does meow-masking work?
 -  What happens when you restart the server?
-
-## Architecture Notes
-
-TODO
 
 ## Set up Identity Provider
 
@@ -230,7 +231,6 @@ Finally, pass the configuration object to the constructor of `PublicClientApplic
 
 ```
 const msalInstance = new msal.PublicClientApplication(msalConfig);
-
 ```
 
 ### Create login function 
@@ -240,24 +240,40 @@ We can call methods on `msalInstance` to perform authentication tasks. The first
 Refer to [this documentation](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/login-user.md), and implement the `login` function.
 
 Notes:
-- Be sure to export the function.
-- Use the "redirect" interaction style.
+- Use the "redirect" interaction type.
 - Include a `scopes` option when calling the MSAL method. 
 
+### Create logout function
 
+Use [this documentation](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/logout.md) to create a `logout` function.
 
+Notes:
+- Use the "redirect" interaction type.
 
+### Gather ye tokens
 
+When we call the MSAL method to log a user in, it will redirect the browser to a Microsoft login screen. If login is successful, the login screen will redirect the browser back to Catchat, with an authorization code. MSAL will then call Azure AD with the authorization code, and exchange it for tokens, which our app can use.
 
+Create a function called `getTokens` that calls `handleRedirectPromise()` to retrieve tokens. The `getTokens` function should return an object that contains the raw access token, and claims from the ID token, (like the user's name):
 
+```
+{
+  accessToken
+  idClaims
+}
+```
 
+### Add a login header
 
+Let's use the authentication functions we created to improve the user experience of Catchat.
 
+Users should have button to log in and log out, and their name should appear to confirm they've logged in. Luckily, Catchat already includes a component to encapsulate these features, called `LoginHeader.tsx`.
 
+Replace the static `h1` header in Catchat v1 with the `LoginHeader` component. 
 
+### Add username to chat messages
 
+With the login header in place, we can log in and log out, and we can see our name, but we're still using a randomly-generated username in chat. Let's fix that.
 
-
-
-
+Replace the random user with relevant claims sent back in the token response, so that chat users see their own names next to chat messages.
 
