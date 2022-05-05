@@ -7,7 +7,7 @@ Catchat is a cat-themed chat application! Catchat v1 has two great features:
 
 **Objective**: Your job is to take Catchat to the next level by adding authentication.
 
-## Directions
+# Directions
 
 Catchat v1 comes with these components:
 
@@ -16,7 +16,7 @@ Catchat v1 comes with these components:
 
 You will add a third component: an Azure Active Directory identity provider (aka Azure AD) to store chat users. Then you'll update the client and server code to integrate with the identity provider.
 
-### Start Catchat
+## Start Catchat
 
 Before making changes, let's explore Catchat v1. 
 
@@ -39,16 +39,18 @@ Now you can chat! Open up http://localhost:8080 in a browser, and you should be 
 
 Play with the application, take a look at the code, and see if you can answer these questions. 
 
-##### Questions
+#### Questions
 
 -  Where do the chat users' names come from?
 -  How do messages get sent between users?
 -  How does meow-masking work?
 -  What happens when you restart the server?
 
-### Architecture Notes
+## Architecture Notes
 
-### Set up Identity Provider
+TODO
+
+## Set up Identity Provider
 
 An **Identity Provider** is an entity that provides services for authenticating users. We will use Microsoft Azure AD for our identity provider. 
 
@@ -56,7 +58,7 @@ Azure AD is free, but you will need to set up an account on Microsoft Azure firs
 
 Once you have an Azure account, follow these instructions to set up Azure AD to work with Catchat.
 
-#### Create an Azure AD tenant
+### Create an Azure AD tenant
 
 First we'll create an Azure AD **tenant**. A tenant is an instance of Azure AD dedicated to a single organization. Each tenant has a **directory**, which serves as the identity provider for the tenant. 
 
@@ -78,13 +80,13 @@ TODO
 
 Explore this page a bit and try to answer these questions.
 
-##### Questions
+#### Questions
 
 - What users does your directory currently contain?
 - What time did you first sign in to this directory, and from what IP address?
 - How can you switch to another tenant?
 
-#### Create a User
+### Create a User
 
 Now that we have a directory, let's add a user to it.
 
@@ -102,13 +104,13 @@ Let's now log in as that user and set a password.
 
 You should now be logged in to the Azure portal as the user you just created.
 
-##### Questions
+#### Questions
 
 - What settings in the directory are available / unavailable to this user?
 - Can you reset your own password from the directory?
 - Can you add new users?
 
-#### Add App Registrations 
+### Add App Registrations 
 
 In this step we'll create **app registrations** in Azure AD. An app registration configures authentication workflows and settings for apps that use the directory. 
 
@@ -116,9 +118,9 @@ We'll create two app registrations, one for the Catchat backend, and one for the
 
 Before beginning, make sure you are logged in as the admin user that created your tenant.
 
-##### Backend registration
+#### Backend registration
 
-###### Register the app
+##### Register the app
 
 1. Go to the main Azure AD page. 
 2. Select **App registrations**.
@@ -127,7 +129,7 @@ Before beginning, make sure you are logged in as the admin user that created you
 5. For "Supported Account Types", select **Accounts in any organizational directory**. 
 6. Select **Register**. This should open up the settings for your new app.
 
-###### Add authentication settings
+##### Add authentication settings
 
 1. In the app settings, select **Expose an API**.
 2. Set the **Application ID URI** to a friendly but unique name, like `api://my-cat-chat`.
@@ -138,9 +140,9 @@ Before beginning, make sure you are logged in as the admin user that created you
 7.  For **Admin consent description**, put the same message, or whatever you like.
 8.  Select **Add Scope** to save.
 
-##### Frontend registration
+#### Frontend registration
 
-###### Register the app
+##### Register the app
 
 1. Go to the main Azure AD page. 
 2. Select **App registrations**.
@@ -150,7 +152,7 @@ Before beginning, make sure you are logged in as the admin user that created you
 6. For "Redirect URI" select **Single-page application** and enter `http://localhost:8080`.
 7. Select **Register**. This should open up the settings for your new app.
 
-###### Add authentication settings
+##### Add authentication settings
 
 1. In the app settings, select **Authentication**.
 2. Under **Implicit grant and hybrid flows** check the boxes next to **Access tokens** and **ID tokens**.
@@ -162,11 +164,11 @@ Before beginning, make sure you are logged in as the admin user that created you
 8. Check the box next to the permission you created earlier.
 9. Click **Add permission** to save.
 
-### Add authentication code to frontend 
+## Add authentication code to frontend 
 
 Now it's time to integrate Catchat with our identity provider. We'll start with the frontend.
 
-#### Set up environment variables
+### Set up environment variables
 
 Catchat uses a library called MSAL to talk to Azure AD. Catchat already has the MSAL package installed, but we'll need to configure the library so it can find our tenant and app. We'll store these settings in environment variables, and use the `dotenv` package for local development.
 
@@ -192,7 +194,7 @@ You can find the two custom settings in your Azure AD directory:
 - The Application ID appears on the overview pane of the SPA app registration page. 
 - The Application ID URI appears on the overview pane of the API app registration page. 
 
-#### Instantiate MSAL
+### Instantiate MSAL
 
 Now we'll [create an instance of MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/initialization.md) so the frontend can talk to Azure AD. 
 
@@ -231,7 +233,7 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 ```
 
-#### Create login function 
+### Create login function 
 
 We can call methods on `msalInstance` to perform authentication tasks. The first thing we should implement is a function to log users in. 
 
