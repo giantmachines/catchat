@@ -192,8 +192,8 @@ SCOPE=api://<API_APPLICATION_ID_URI>/Chat.Messaging
 ```
 
 You can find the two custom settings in your Azure AD directory:
-- The Application ID appears on the overview pane of the SPA app registration page. 
-- The Application ID URI appears on the overview pane of the API app registration page. 
+- The `SPA_APPLICATION_ID` appears on the overview pane of the SPA app registration page. 
+- The `API_APPLICATION_ID_URI` appears on the overview pane of the API app registration page, for example `my-cat-chat`.
 
 ### Instantiate MSAL
 
@@ -263,6 +263,9 @@ Create a function called `getTokens` that calls `handleRedirectPromise()` to ret
 }
 ```
 
+See [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications) for details on `handleRedirectPromise`.
+
+
 ### Add a login header
 
 Let's use the authentication functions we created to improve the user experience of Catchat.
@@ -277,3 +280,108 @@ With the login header in place, we can log in and log out, and we can see our na
 
 Replace the random user with relevant claims sent back in the token response, so that chat users see their own names next to chat messages.
 
+## Protect server access 
+
+So far we've used information found in the ID token to enhance the Catchat user experience, but we haven't really secured the application. Let's update the server so that only users with valid access tokens can use Catchat.
+
+First we'll add server middleware which will decode the access token, read its claims, and verify specific claims. 
+
+With the server checking access tokens, the client will no longer have access to its endpoints. So we'll also update the client's API layer to send an access token with each request.
+
+### Set up dependencies
+
+We want our chat server to inspect access tokens coming from the client and verify each token, but what exactly should we verify about the token? We can check any part of the token we'd like, such as specific claims, header information, and whether the signature is valid. 
+
+If we need a robust solution to cover a lot of token validation scenarios, we'll probably want to use an authentication library such as Passport. But to start out, let's simply check specific claims manually. 
+
+#### Add environment variables
+
+Create a `.env` file for the server.
+
+```
+cd server
+touch .env
+```
+
+Then add two entries to the `.env` file.
+
+```
+CLIENT_APP_ID=<CLIENT_APPLICATION_ID>
+AUDIENCE=<API_APPLICATION_ID_URI>
+```
+
+You can find the two custom settings in your Azure AD directory:
+- The `CLIENT_APPLICATION_ID` appears on the overview pane of the SPA app registration page. 
+- The `API_APPLICATION_ID_URI` appears on the overview pane of the API app registration page, for example `api://my-cat-chat`.
+
+Next, open `server/src/index.ts` and pull the enviroment variables in. Add these constant declarations below the `dotenv` call:
+
+```
+require('dotenv').config();
+
+const CLIENT_APP_ID = process.env.CLIENT_APP_ID;
+const AUDIENCE = process.env.AUDIENCE;
+```
+
+#### Add libraries
+
+Add these imports to the server:
+
+```
+import { Request, Response, NextFunction } from 'express';
+import { decode, JwtPayload } from 'jsonwebtoken';
+```
+
+The imports from `express` will allow us to create a middleware. The imports from `jsonwebtoken` will allow us to read the contents of the access token.
+
+
+### Parse access token claims
+
+In order to verify the claims in an access token, we must first decode it.
+
+Create a utility function called `parseClaims` which will decode tokens. It should have a signature like this:
+
+```
+(token: string) => JwtPayload | null
+```
+
+### Implement middleware
+
+With our `parseClaims` function, we can now read access tokens and verify their contents. We want to do this on each request to the server, but how?
+
+We could add code to each endpoint that performs this check. However, this approach would mean repeating the same authentication code in multiple places, making that code brittle and difficult to maintain. Extracting the authentication code into a separate function would help with these issues, but we still run the risk of forgetting to call the authentication function when we add a new endpoint.
+
+Instead, we can write an Express *middleware*. 
+
+Our middleware will inspect each incoming request before it reaches an endpoint, inspect its access token, and return an error status to the client if the token check fails.
+
+See the [Express docs](https://expressjs.com/en/guide/writing-middleware.html) on writing middleware for more information.
+
+#### Write middleware function
+
+Create a function called `accessTokenValidator` with the following signature:
+
+```
+(req: Request, res: Response, next: NextFunction) => void
+```
+
+The function should:
+
+- Pull the access token from the **authorization header** of each request;
+- Parse the claims from the token;
+- Compare the `aud` claim with the `AUDIENCE` environment variable;
+- Compare the `appid` claim with the `CLIENT_APP_ID` environment variable;
+- Return a 401 status code if either claim does not match;
+- Pass the request on to its handler if both claims match.
+
+Use this middleware for all requests.
+
+### Send access tokens from client
+
+With the chat server locked down, the client must now send an access token with each request.
+
+Update the API functions in `client/src/api.ts` so that they pass a Bearer token in the Authorization header. Be sure to include the string `Bearer`. 
+
+Then update any applicable frontend code so that it passes the access token to these API functions.
+
+If you've hooked everything up correctly, you should only be able to send and receive chat messages with a valid access token.
