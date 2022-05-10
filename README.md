@@ -3,11 +3,13 @@
 Catchat is a cat-themed chat application! Catchat v1 has two great features:
 
 1. A chat room.
-2. Meow-masking, which replaces certain words with "meow" when they appear in chat.
+2. MeowMasking®, which replaces certain words with "meow" when they appear in chat.
 
-**Objective**: Your job is to take Catchat to the next level by adding authentication.
+**Objective**: Your job is to take Catchat to the next level (v2) by adding authentication. 
 
-# Directions
+After you finish v2, move on to v3, which adds authorization.
+
+# Catchat v2 - Authentication
 
 Catchat v1 comes with these components:
 
@@ -325,7 +327,7 @@ const AUDIENCE = process.env.AUDIENCE;
 
 #### Add libraries
 
-Add these imports to the server:
+Add these imports to the server as well:
 
 ```
 import { Request, Response, NextFunction } from 'express';
@@ -378,10 +380,150 @@ Use this middleware for all requests.
 
 ### Send access tokens from client
 
-With the chat server locked down, the client must now send an access token with each request.
+With the chat server authenticating requests, the client must now send an access token with each request.
 
-Update the API functions in `client/src/api.ts` so that they pass a Bearer token in the Authorization header. Be sure to include the string `Bearer`. 
+Update the API functions in `client/src/api.ts` so that they pass a Bearer token in the Authorization header. (Be sure to include the string `Bearer`). 
 
 Then update any applicable frontend code so that it passes the access token to these API functions.
 
 If you've hooked everything up correctly, you should only be able to send and receive chat messages with a valid access token.
+
+## Wrapping up
+
+Congratulations, you've finished Catchat v2!
+
+If you'd like to see how your solution compares to ours, take a look at the **v2** tag. 
+
+```
+git diff my-branch v2
+```
+
+Proceed to the next section for an additional Catchat enhancement.
+
+# Catchat v3 - Authorization
+
+With Catchat v2, we added **identity** to the application. This means we can restrict access to only authenticated users, and we can provide these users with a somewhat customized experience. For instance, we can now attach names to messages. 
+
+But we can only do so much with authentication alone.
+
+Remember the MeowMasking® feature? Currently any user can add new masks, which may become a problem as CatChat grows. Since masking affects the chat experience for all users, we should restrict who can add to and remove words from the mask list.  
+
+The solution? We need an **authorization** piece for the MeowMasker, which:
+
+1. Displays the MeowMasking UI to authorized users only.
+2. Restricts access to `/masks` endpoints to authorized users only.
+
+How do we distinguish authorized from non-authorized users? We'll segment our users into two **roles**: `User` and `Admin`. Users are normal chat users, and Admins will have the ability to update the MeowMasker.
+
+Once we can assign a role to a user, the role will appear in the user's ID token, which will allow the application to authorize them.
+
+## Set up roles in Identity Provider
+
+Azure AD includes a number of built-in roles, but these relate to using and administering Azure AD itself. We will instead use the **App role** feature to create roles just for Catchat.
+
+### Create more test users
+
+Since Catchat will now have both Admins and Users, we should have at least two test users in our directory to play with.
+
+If you haven't already, create one or more additional test users in your directory. We will assign the Admin role to one of them later.
+
+### Add App roles
+
+Let's create our custom app roles.
+
+1. Go to your directory in the Azure portal.
+2. Go to **App registrations**.
+3. Open up the `SPA` registration page.
+4. Go to **App roles**.
+5. Select **Create app role**, repeat for each role.
+
+#### User role
+
+1. For **Display name**, enter `Users`.
+2. For **Allowed member types** select **Users/Groups**.
+3. For **Value** enter `Chat.User`.
+4. For **Description** enter `Chat users can send messages in the chat`.
+5. For **Do you want to enable this app role?**, select yes.
+6. Click **Apply** when finished.
+
+#### Users role
+
+1. For **Display name**, enter `Admins`.
+2. For **Allowed member types** select **Users/Groups**.
+3. For **Value** enter `Chat.Admin`.
+4. For **Description** enter `Chat admins can configure chat settings.`.
+5. For **Do you want to enable this app role?**, select yes.
+6. Click **Apply** when finished.
+
+### Assign Admin role to user 
+
+Now that we have the Admin role, we can make one lucky user an admin.
+
+Follow these steps to assign the Admin role to a user:
+
+1. Go to the main page of your directory.
+2. Select **Enterprise Applications**.
+3. Select the `SPA` application.
+4. Go to **Users and Groups**.
+5. Select **Add user/group**.
+6. Click the link under **Users**. 
+7. Click the user you want to grant the Admin role to, then **Select**.
+8. Click the link under **Select a role**.
+9. Click **Admins**, then **Select**. 
+10. Click **Assign**.
+
+## Set up frontend
+
+We have two tasks to complete on the frontend.
+
+1. Hide the MeowMasker from non-admins.
+2. Pass the ID token to the server when updating mask settings.
+
+### Hide the MeowMasker
+
+With the roles now in place, you should be able to see which roles (if any) are assigned to the user when inspecting the ID token claims.
+
+Update the frontend code so that the `MaskSettings` component only displays if the user has the `Chat.Admin` role.
+
+You should see the MeowMasker when logged in as an admin user, and not see it when you're not.
+
+### Pass the ID token
+
+The frontend can safely use the role from the ID token to display the `MaskSettings` component, which is just UI. But for actually updating the list of masks on the server, we should not trust the frontend to tell the server what role the user has. Instead, we'll pass the full ID token to the server so it can parse and verify it itself. 
+
+Update the frontend code so that `postMasks` sends the full ID token string to the server, contained in a header called `id-token`. 
+
+## Authorize requests on the backend
+
+The frontend should now send the ID token whenever it sends a POST request to the `/masks` endpoint. Let's lock down the endpoint so that only admins can update masks.
+
+Update the `/masks` endpoint so that it:
+
+- Parses claims from the ID token
+- Allows the request to proceed if the token includes `Chat.Admin` in the role claim.
+- Returns a 403 status if this check fails.
+
+If everything is set up correctly, you won't be able to update the masks store unless the token is valid and contains the correct role. (As with the access token, for a more robust solution we would also validate the token signature, but that's beyond our scope.)
+
+## Wrapping up
+
+You've finished Catchat v3, adding an authorization layer to the MeowMasker. Congratulations!
+
+To compare with our version, take a look at the **v3** tag.
+
+```
+git diff my-branch v3
+```
+
+## Extra credit
+
+Here are some additional Catchat enhancements for you to implement. Pull requests welcome!
+
+- Add a badge next to all Admin's names in the chat.
+- Leverage the `Users` role so that only users with that role can send and receive chat messages.
+- Implement a read-only role, so that users with this role can read but not send chat messages.
+- Update the MeowMasker so that updates to the mask list propagate immediately to all clients.
+- Add a "room topic" feature. 
+- Add a private messaging feature.
+- Add a ban feature.
+- Update CatChat to use web sockets instead of polling.
