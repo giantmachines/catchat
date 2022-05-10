@@ -9,6 +9,15 @@ Catchat is a cat-themed chat application! Catchat v1 has two great features:
 
 After you finish v2, move on to v3, which adds authorization.
 
+Here's our planned feature matrix:
+
+|    | Messaging | Usernames | MeowMasking® Admin |
+|----|-----------|-----------|--------------------|
+| v1 | yes       | no        | no                 |
+| v2 | yes       | yes       | no                 |
+| v3 | yes       | yes       | yes                |
+
+
 # Catchat v2 - Authentication
 
 Catchat v1 comes with these components:
@@ -20,8 +29,22 @@ You will add a third component: an Azure Active Directory identity provider (aka
 
 ## Architecture Notes
 
-TODO Feature matrix
-TODO Sequence diagram
+CatChat v1 is a simple client-server chat application. The server holds a list of messages, and the client can add to this list and poll for new messages. The client updates the masks list similarly.
+
+CatChat v2 (and v3) will use the Oauth protocol to authenticate with Azure AD. Oauth (with OpenID Connect) is the industry standard authentication protocol identity providers use under the hood, and it defines the ways in which authenticating entities communicate to handle delegated authentication scenarios.
+
+Here's a diagram of one Oauth flow. 
+
+![](images/Oauth.png?raw=true)
+
+It's helpful to understand this diagram when dealing with authentication, but luckily we can use SDK's and libraries to hide many of the details of implementing Oauth. For Catchat we'll use a library called MSAL that takes care of exchanging the auth code for an access token, getting new refresh tokens, redirecting to the Identity Provider, and other low-level concerns.
+
+This means we can get the tokens in a fairly straightforward way, and focus on how we use the tokens in our application, rather than how we fetch them. 
+
+Catchat will thus fetch the tokens via MSAL, then send an access and/or id token with API requests, as applicable:
+
+![](images/ClientServer.png?raw=true)
+
 
 ## Start Catchat
 
@@ -79,7 +102,7 @@ Note: If you already have an Azure account with multiple directories, complete t
 
 You should now see a screen that looks like this:
 
-TODO
+![](images/AzureAD.png?raw=true)
 
 Explore this page a bit and try to answer these questions.
 
@@ -476,8 +499,8 @@ Follow these steps to assign the Admin role to a user:
 
 We have two tasks to complete on the frontend.
 
-1. Hide the MeowMasker from non-admins.
-2. Pass the ID token to the server when updating mask settings.
+- Hide the MeowMasker UI from non-admins.
+- Pass the ID token to the server when updating mask settings.
 
 ### Hide the MeowMasker
 
@@ -485,7 +508,7 @@ With the roles now in place, you should be able to see which roles (if any) are 
 
 Update the frontend code so that the `MaskSettings` component only displays if the user has the `Chat.Admin` role.
 
-You should see the MeowMasker when logged in as an admin user, and not see it when you're not.
+You should see the MeowMasker UI when logged in as an admin user, and not see it when you're not.
 
 ### Pass the ID token
 
@@ -497,7 +520,7 @@ Update the frontend code so that `postMasks` sends the full ID token string to t
 
 The frontend should now send the ID token whenever it sends a POST request to the `/masks` endpoint. Let's lock down the endpoint so that only admins can update masks.
 
-Update the `/masks` endpoint so that it:
+Update the `/masks` POST endpoint so that it:
 
 - Parses claims from the ID token
 - Allows the request to proceed if the token includes `Chat.Admin` in the role claim.
@@ -523,7 +546,8 @@ Here are some additional Catchat enhancements for you to implement. Pull request
 - Leverage the `Users` role so that only users with that role can send and receive chat messages.
 - Implement a read-only role, so that users with this role can read but not send chat messages.
 - Update the MeowMasker so that updates to the mask list propagate immediately to all clients.
-- Add a "room topic" feature. 
+- Show the user's picture / avatar next to their name.
+- Add a room topic feature. 
 - Add a private messaging feature.
 - Add a ban feature.
-- Update CatChat to use web sockets instead of polling.
+- Update CatChat to use web sockets for messaging instead of polling.
