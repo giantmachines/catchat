@@ -301,7 +301,7 @@ With the login header in place, we can log in and log out, and we can see our na
 
 Replace the random user with relevant claims sent back in the token response, so that chat users see their own names next to chat messages.
 
-## Protect server access 
+## Protect server endpoints 
 
 So far we've used information found in the ID token to enhance the Catchat user experience, but we haven't really secured the application. Let's update the server so that only users with valid access tokens can use Catchat.
 
