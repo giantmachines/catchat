@@ -546,4 +546,4 @@ Here are some additional Catchat enhancements for you to implement. Pull request
 - Add a room topic feature. 
 - Add a private messaging feature.
 - Add a ban feature.
-- Update CatChat to use web sockets for messaging instead of polling.
+- Update CatChat to use web sockets for messaging.
