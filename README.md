@@ -1,4 +1,4 @@
-# CATCHAT
+# CATCHAT 🐈
 
 Catchat is a cat-themed chat application! Catchat v1 has two great features:
 
