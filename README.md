@@ -55,13 +55,16 @@ Clone the repo to your local machine, checkout the **v1** tag, and start the ser
 ```
 git checkout v1
 cd server
+npm install
 npm run build && npm run start
 ```
 
-Then in another console window, start the client:
+Then in another console window, instantiate a `.env` file and start the client:
 
 ```
 cd client
+npm install
+echo "SERVER_URI=http://localhost:3000" >> .env
 npm run build && npm run start
 ```
 
@@ -198,14 +201,7 @@ Now it's time to integrate Catchat with our identity provider. We'll start with 
 
 Catchat uses a library called MSAL to talk to Azure AD. Catchat already has the MSAL package installed, but we'll need to configure the library so it can find our tenant and app. We'll store these settings in environment variables, and use the `dotenv` package for local development.
 
-Create a file called `.env` to hold these local settings:
-
-```
-cd client
-touch .env
-```
-
-Then open the file and add these variables: 
+You already created a .env file earlier to hold the server URI. Open the file and add these variables: 
 
 ```
 CLIENT_ID=<SPA_APPLICATION_ID>
@@ -228,13 +224,13 @@ Open `client/src/authenticate.ts`. This is where we'll store the base-level auth
 
 First, import MSAL.
 
-```
+```typescript
 import * as msal from '@azure/msal-browser';
 ```
 
 Next, pull in the environment variables and add them to a configuration object.
 
-```
+```typescript
 const CLIENT_ID = process.env.CLIENT_ID;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const AUTHORITY = process.env.AUTHORITY;
@@ -254,7 +250,7 @@ const msalConfig = {
 
 Finally, pass the configuration object to the constructor of `PublicClientApplication` to create an instance.
 
-```
+```typescript
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 ```
 
@@ -281,7 +277,7 @@ When we call the MSAL method to log a user in, it will redirect the browser to a
 
 Create a function called `getTokens` that calls `handleRedirectPromise()` to retrieve tokens. The `getTokens` function should return an object that contains the raw access token, and claims from the ID token, (like the user's name):
 
-```
+```typescript
 {
   accessToken
   idClaims
@@ -341,7 +337,7 @@ You can find the two custom settings in your Azure AD directory:
 
 Next, open `server/src/index.ts` and pull the enviroment variables in. Add these constant declarations below the `dotenv` call:
 
-```
+```typescript
 require('dotenv').config();
 
 const CLIENT_APP_ID = process.env.CLIENT_APP_ID;
@@ -352,7 +348,7 @@ const AUDIENCE = process.env.AUDIENCE;
 
 Add these imports to the server as well:
 
-```
+```typescript
 import { Request, Response, NextFunction } from 'express';
 import { decode, JwtPayload } from 'jsonwebtoken';
 ```
@@ -366,7 +362,7 @@ In order to verify the claims in an access token, we must first decode it.
 
 Create a utility function called `parseClaims` which will decode tokens. It should have a signature like this:
 
-```
+```typescript
 (token: string) => JwtPayload | null
 ```
 
@@ -386,7 +382,7 @@ See the [Express docs](https://expressjs.com/en/guide/writing-middleware.html) o
 
 Create a function called `accessTokenValidator` with the following signature:
 
-```
+```typescript
 (req: Request, res: Response, next: NextFunction) => void
 ```
 
