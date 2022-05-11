@@ -29,9 +29,9 @@ You will add a third component: an Azure Active Directory identity provider (aka
 
 ## Architecture Notes
 
-CatChat v1 is a simple client-server chat application. The server holds a list of messages, and the client can add to this list and poll for new messages. The client updates the masks list similarly.
+Catchat v1 is a simple client-server chat application. The server holds a list of messages, and the client can add to this list and poll for new messages. The client updates the masks list similarly.
 
-CatChat v2 (and v3) will use the Oauth protocol to authenticate with Azure AD. Oauth (with OpenID Connect) is the industry standard authentication protocol identity providers use under the hood, and it defines the ways in which authenticating entities communicate to handle delegated authentication scenarios.
+Catchat v2 (and v3) will use the Oauth protocol to authenticate with Azure AD. Oauth (with OpenID Connect) is the industry standard authentication protocol identity providers use under the hood, and it defines the ways in which authenticating entities communicate to handle delegated authentication scenarios.
 
 Here's a diagram of one Oauth flow. 
 
@@ -425,7 +425,7 @@ With Catchat v2, we added **identity** to the application. This means we can res
 
 But we can only do so much with authentication alone.
 
-Remember the MeowMasking® feature? Currently any user can add new masks, which may become a problem as CatChat grows. Since masking affects the chat experience for all users, we should restrict who can add to and remove words from the mask list.  
+Remember the MeowMasking® feature? Currently any user can add new masks, which may become a problem as Catchat grows. Since masking affects the chat experience for all users, we should restrict who can add to and remove words from the mask list.  
 
 The solution? We need an **authorization** piece for the MeowMasker, which:
 
@@ -546,4 +546,4 @@ Here are some additional Catchat enhancements for you to implement. Pull request
 - Add a room topic feature. 
 - Add a private messaging feature.
 - Add a ban feature.
-- Update CatChat to use web sockets for messaging.
+- Update Catchat to use web sockets for messaging.
