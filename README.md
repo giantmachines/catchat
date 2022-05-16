@@ -52,6 +52,8 @@ Before making changes, let's explore Catchat v1.
 
 Clone the repo to your local machine, checkout the **v1** tag, and start the server. 
 
+Note: You may see a message from git about having a detached HEAD. This is normal.
+
 ```
 git checkout v1
 cd server
@@ -83,9 +85,20 @@ Play with the application, take a look at the code, and see if you can answer th
 
 An **Identity Provider** is an entity that provides services for authenticating users. We will use Microsoft Azure AD for our identity provider. 
 
-Azure AD is free, but you will need to set up an account on Microsoft Azure first. We won't cover the process for signing up for Azure here. 
+Azure AD is free, but **you will need to set up an account on Microsoft Azure first. We won't cover the process for signing up for Azure here.**
 
 Once you have an Azure account, follow these instructions to set up Azure AD to work with Catchat.
+
+#### Navigating Azure
+
+The Azure portal can sometimes feel like a labyrinth of menus and settings. You will probably get lost.
+
+A few pointers to help find your way:
+
+- After you create a tenant (next step), find your way back to it by typing _Azure Active Directory_ in the **Search Bar** at the top of the portal.
+- Return to the Azure home screen by clicking the Azure logo.
+- If you are logged in as the wrong user, go to **Sign in with a different account** in the top-right menu.
+- If you are logged in to the wrong directory, go to **Switch directory** in the top-right menu.
 
 ### Create an Azure AD tenant
 
@@ -99,9 +112,10 @@ Note: If you already have an Azure account with multiple directories, complete t
 2. Select **Create a resource**. 
 3. Search for **Azure Active Directory**.
 4. Select **Create**.
-5. Provide a clever oganization name and domain name.
-6. Select **Review and Create**.
-7. Once the tenant is created, click the generated link to visit it, or use the **Switch Directory** link under your username.
+5. For tenant type, select **Azure Active Directory** (not B2C!)
+6. Provide a clever oganization name and domain name.
+7. Select **Review and Create**.
+8. Once the tenant is created, click the generated link to visit it, or use the **Switch Directory** link under your username.
 
 You should now see a screen that looks like this:
 
@@ -155,7 +169,7 @@ Before beginning, make sure you are logged in as the admin user that created you
 2. Select **App registrations**.
 3. Select **New registration**.
 4. For "Name", enter `API`.
-5. For "Supported Account Types", select **Accounts in any organizational directory**. 
+5. For "Supported Account Types", select **Accounts in any organizational directory - Multitenant**. 
 6. Select **Register**. This should open up the settings for your new app.
 
 ##### Add authentication settings
@@ -177,7 +191,7 @@ Before beginning, make sure you are logged in as the admin user that created you
 2. Select **App registrations**.
 3. Select **New registration**.
 4. For "Name", enter `SPA`.
-5. For "Supported Account Types", select **Accounts in any organizational directory**. 
+5. For "Supported Account Types", select **Accounts in any organizational directory - Multitenant**. 
 6. For "Redirect URI" select **Single-page application** and enter `http://localhost:8080`.
 7. Select **Register**. This should open up the settings for your new app.
 
