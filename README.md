@@ -37,7 +37,7 @@ Here's a diagram of one Oauth flow.
 
 ![](images/Oauth.png?raw=true)
 
-It's helpful to understand this diagram when dealing with authentication, but luckily we can use SDK's and libraries to hide many of the details of implementing Oauth. For Catchat we'll use a library called MSAL that takes care of exchanging the auth code for an access token, getting new refresh tokens, redirecting to the Identity Provider, and other low-level concerns.
+It's helpful to understand this diagram when dealing with authentication, but luckily we can use SDK's and libraries to hide many of the details of implementing Oauth. For Catchat we'll use a library called MSAL that takes care of exchanging the auth code for an access token, getting new refresh tokens, redirecting to the Identity Provider (Idp), and other low-level concerns.
 
 This means we can get the tokens in a fairly straightforward way, and focus on how we use the tokens in our application, rather than how we fetch them. 
 
