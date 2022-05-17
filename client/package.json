@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack",
-    "start": "http-server ./dist"
+    "start": "http-server ./dist -c-1"
   },
   "author": "",
   "license": "ISC",
@@ -23,9 +23,7 @@
     "typescript": "^4.6.2",
     "use-interval": "^1.4.0",
     "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2"
-  },
-  "devDependencies": {
+    "webpack-cli": "^4.9.2",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1"
