@@ -211,6 +211,16 @@ Before beginning, make sure you are logged in as the admin user that created you
 
 Now it's time to integrate Catchat with our identity provider. We'll start with the frontend.
 
+### Configure http-server
+
+The `http-server` package which serves the frontend caches results by default. This may force you to make a hard refresh in your browser to see changes,  making development more difficult. 
+
+Add a cache flag to the **start** script in `client/package.json`:
+
+```
+"start": "http-server ./dist -c-1"
+```
+
 ### Set up environment variables
 
 Catchat uses a library called MSAL to talk to Azure AD. Catchat already has the MSAL package installed, but we'll need to configure the library so it can find our tenant and app. We'll store these settings in environment variables, and use the `dotenv` package for local development.
