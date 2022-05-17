@@ -96,6 +96,9 @@ The Azure portal can sometimes feel like a labyrinth of menus and settings. You 
 A few pointers to help find your way:
 
 - After you create a tenant (next step), find your way back to it by typing _Azure Active Directory_ in the **Search Bar** at the top of the portal.
+
+![](images/azure-search.png?raw=true)
+
 - Return to the Azure home screen by clicking the Azure logo.
 - If you are logged in as the wrong user, go to **Sign in with a different account** in the top-right menu.
 - If you are logged in to the wrong directory, go to **Switch directory** in the top-right menu.
@@ -172,16 +175,21 @@ Before beginning, make sure you are logged in as the admin user that created you
 5. For "Supported Account Types", select **Accounts in any organizational directory - Multitenant**. 
 6. Select **Register**. This should open up the settings for your new app.
 
+![](images/backend-registration.png?raw=true)
+
 ##### Add authentication settings
 
 1. In the app settings, select **Expose an API**.
 2. Set the **Application ID URI** to a friendly but unique name, like `api://my-cat-chat`.
 3. Select **Add a scope**.
-4.  For **Scope name**, put `Chat.Messaging`.
-5.  For **Who can consent**, select `Admins and users`.
-6.  For **Admin consent display name**, put `Allow reading and writing chat messages`.
-7.  For **Admin consent description**, put the same message, or whatever you like.
-8.  Select **Add Scope** to save.
+
+![](images/add-scope.png?raw=true)
+
+5.  For **Scope name**, put `Chat.Messaging`.
+6.  For **Who can consent**, select `Admins and users`.
+7.  For **Admin consent display name**, put `Allow reading and writing chat messages`.
+8.  For **Admin consent description**, put the same message, or whatever you like.
+9.  Select **Add Scope** to save.
 
 #### Frontend registration
 
