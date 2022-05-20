@@ -360,7 +360,7 @@ The imports from `express` will allow us to create a middleware. The imports fro
 
 In order to verify the claims in an access token, we must first decode it.
 
-Create a utility function called `parseClaims` which will decode tokens. It should have a signature like this:
+Create a utility function called `parseClaims` which should decode tokens. It should have a signature like this:
 
 ```typescript
 (token: string) => JwtPayload | null
