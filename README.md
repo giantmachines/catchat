@@ -67,7 +67,7 @@ Then in another console window, instantiate a `.env` file and start the client:
 cd client
 npm install
 echo "SERVER_URI=http://localhost:3000" >> .env
-npm run build && npm run start
+npm run watch
 ```
 
 Now you can chat! Open up http://localhost:8080 in a browser, and you should be able to send messages to yourself. You can open the client up in other browsers (or a private window) to create additional users.
@@ -218,16 +218,6 @@ Before beginning, make sure you are logged in as the admin user that created you
 ## Add authentication code to frontend 
 
 Now it's time to integrate Catchat with our identity provider. We'll start with the frontend.
-
-### Configure http-server
-
-The `http-server` package which serves the frontend caches results by default. This may force you to make a hard refresh in your browser to see changes,  making development more difficult. 
-
-Add a cache flag to the **start** script in `client/package.json`:
-
-```
-"start": "http-server ./dist -c-1"
-```
 
 ### Set up environment variables
 
