@@ -37,7 +37,7 @@ Here's a diagram of one Oauth flow.
 
 ![](images/Oauth.png?raw=true)
 
-It's helpful to understand this diagram when dealing with authentication, but luckily we can use SDK's and libraries to hide many of the details of implementing Oauth. For Catchat we'll use a library called MSAL that takes care of exchanging the auth code for an access token, getting new refresh tokens, redirecting to the Identity Provider, and other low-level concerns.
+It's helpful to understand this diagram when dealing with authentication, but luckily we can use SDK's and libraries to hide many of the details of implementing Oauth. For Catchat we'll use a library called MSAL that takes care of exchanging the auth code for an access token, getting new refresh tokens, redirecting to the Identity Provider (Idp), and other low-level concerns.
 
 This means we can get the tokens in a fairly straightforward way, and focus on how we use the tokens in our application, rather than how we fetch them. 
 
@@ -241,12 +241,12 @@ REDIRECT_URI=http://localhost:8080
 SERVER_URI=http://localhost:3000
 AUTHORITY=https://login.microsoftonline.com/organizations/
 KNOWN_AUTHORITY=login.microsoft.com
-SCOPE=api://<API_APPLICATION_ID_URI>/Chat.Messaging
+SCOPE=<API_APPLICATION_ID_URI>/Chat.Messaging
 ```
 
 You can find the two custom settings in your Azure AD directory:
 - The `SPA_APPLICATION_ID` appears on the overview pane of the SPA app registration page. 
-- The `API_APPLICATION_ID_URI` appears on the overview pane of the API app registration page, for example `my-cat-chat`.
+- The `API_APPLICATION_ID_URI` appears on the overview pane of the API app registration page, for example `api://my-cat-chat`.
 
 ### Instantiate MSAL
 
@@ -294,7 +294,7 @@ Refer to [this documentation](https://github.com/AzureAD/microsoft-authenticatio
 
 Notes:
 - Use the "redirect" interaction type.
-- Include a `scopes` option when calling the MSAL method. 
+- Include a `scopes` option when calling the MSAL method using the `SCOPE` env variable you imported.
 
 ### Create logout function
 
@@ -392,7 +392,7 @@ The imports from `express` will allow us to create a middleware. The imports fro
 
 In order to verify the claims in an access token, we must first decode it.
 
-Create a utility function called `parseClaims` which will decode tokens. It should have a signature like this:
+Create a utility function called `parseClaims` which should decode tokens. It should have a signature like this:
 
 ```typescript
 (token: string) => JwtPayload | null
@@ -515,7 +515,7 @@ Follow these steps to assign the Admin role to a user:
 1. Go to the main page of your directory.
 2. Select **Enterprise Applications**.
 3. Select the `SPA` application.
-4. Go to **Users and Groups**.
+4. Select **Users and Groups** from the left sidebar.
 5. Select **Add user/group**.
 6. Click the link under **Users**. 
 7. Click the user you want to grant the Admin role to, then **Select**.
