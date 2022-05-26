@@ -433,6 +433,14 @@ If you've hooked everything up correctly, you should only be able to send and re
 
 Congratulations, you've finished Catchat v2!
 
+### Key takeaways
+
+- You can use an OAuth-compliant identity provider like Azure Active Directory as a user database.
+- Tokens carry all the information you need for many authentication scenarios.
+- Use a library like MSAL to abstract over OAuth details like refresh tokens and caching.
+
+### Check your work
+
 If you'd like to see how your solution compares to ours, take a look at the **v2** tag. 
 
 ```
@@ -550,6 +558,14 @@ If everything is set up correctly, you won't be able to update the masks store u
 
 You've finished Catchat v3, adding an authorization layer to the MeowMasker. Congratulations!
 
+
+### Key takeaways
+
+- When users have different levels of access, configure these levels as roles in the identity provider.
+- Use the ID token when you need information about a user.
+
+### Check your work
+
 To compare with our version, take a look at the **v3** tag.
 
 ```
@@ -569,3 +585,4 @@ Here are some additional Catchat enhancements for you to implement. Pull request
 - Add a private messaging feature.
 - Add a ban feature.
 - Update Catchat to use web sockets for messaging.
+- Verify token signatures.
