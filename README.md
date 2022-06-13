@@ -292,6 +292,7 @@ Use [this documentation](https://github.com/AzureAD/microsoft-authentication-lib
 
 Notes:
 - Use the "redirect" interaction type.
+- There should be no need to pass any arguments to the MSAL `logout` function.
 
 ### Gather ye tokens
 
@@ -316,6 +317,8 @@ Let's use the authentication functions we created to improve the user experience
 Users should have button to log in and log out, and their name should appear to confirm they've logged in. Luckily, Catchat already includes a component to encapsulate these features, called `LoginHeader.tsx`.
 
 Replace the static `h1` header in Catchat v1 with the `LoginHeader` component. 
+
+Hint on how to set this up: create a `useEffect` hook in App.tsx which sets the token in state, and pass the username from the token to the `name` prop in `LoginHeader`.
 
 ### Add username to chat messages
 
